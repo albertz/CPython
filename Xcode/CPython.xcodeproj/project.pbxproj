@@ -11392,6 +11392,22 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		239A132D14223AAC005AF013 /* Python-make */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 239A132E14223AAC005AF013 /* Build configuration list for PBXLegacyTarget "Python-make" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = "Python-make";
+			passBuildSettingsInEnvironment = 1;
+			productName = "Python-make";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		239AECA114223931005AF013 /* Python */ = {
 			isa = PBXNativeTarget;
@@ -11432,6 +11448,7 @@
 			projectRoot = "";
 			targets = (
 				239AECA114223931005AF013 /* Python */,
+				239A132D14223AAC005AF013 /* Python-make */,
 			);
 		};
 /* End PBXProject section */
@@ -12072,6 +12089,29 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		239A132F14223AAC005AF013 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		239A133014223AAC005AF013 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		239AECAA14223931005AF013 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -12132,6 +12172,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		239A132E14223AAC005AF013 /* Build configuration list for PBXLegacyTarget "Python-make" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				239A132F14223AAC005AF013 /* Debug */,
+				239A133014223AAC005AF013 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		239AEC9C14223930005AF013 /* Build configuration list for PBXProject "CPython" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
