@@ -178,7 +178,7 @@ static int expr_constant(expr_ty e);
 
 static int compiler_with(struct compiler *, stmt_ty);
 
-static PyCodeObject *assemble(struct compiler *, int addNone);
+static PyCodeObject *assemble(struct compiler *, int addNone, stmt_ty s);
 static PyObject *__doc__;
 
 #define COMPILER_CAPSULE_NAME_COMPILER_UNIT "compile.c compiler unit"
@@ -287,7 +287,7 @@ PyAST_Compile(mod_ty mod, const char *filename, PyCompilerFlags *flags,
     }
 
     co = compiler_mod(&c, mod);
-
+	
  finally:
     compiler_free(&c);
     assert(co || PyErr_Occurred());
@@ -1227,7 +1227,7 @@ compiler_mod(struct compiler *c, mod_ty mod)
                      mod->kind);
         return 0;
     }
-    co = assemble(c, addNone);
+    co = assemble(c, addNone, NULL);
     compiler_exit_scope(c);
     return co;
 }
@@ -1396,7 +1396,7 @@ compiler_function(struct compiler *c, stmt_ty s)
         st = (stmt_ty)asdl_seq_GET(s->v.FunctionDef.body, i);
         VISIT_IN_SCOPE(c, stmt, st);
     }
-    co = assemble(c, 1);
+    co = assemble(c, 1, s);
     compiler_exit_scope(c);
     if (co == NULL)
         return 0;
@@ -1458,7 +1458,7 @@ compiler_class(struct compiler *c, stmt_ty s)
 
     ADDOP_IN_SCOPE(c, LOAD_LOCALS);
     ADDOP_IN_SCOPE(c, RETURN_VALUE);
-    co = assemble(c, 1);
+    co = assemble(c, 1, s);
     compiler_exit_scope(c);
     if (co == NULL)
         return 0;
@@ -1534,7 +1534,7 @@ compiler_lambda(struct compiler *c, expr_ty e)
     else {
         ADDOP_IN_SCOPE(c, RETURN_VALUE);
     }
-    co = assemble(c, 1);
+    co = assemble(c, 1, NULL);
     compiler_exit_scope(c);
     if (co == NULL)
         return 0;
@@ -2794,7 +2794,7 @@ compiler_comprehension(struct compiler *c, expr_ty e, int type, identifier name,
         ADDOP(c, RETURN_VALUE);
     }
 
-    co = assemble(c, 1);
+    co = assemble(c, 1, NULL);
     compiler_exit_scope(c);
     if (co == NULL)
         goto error;
@@ -3920,7 +3920,7 @@ dump_basicblock(const basicblock *b)
 #endif
 
 static PyCodeObject *
-assemble(struct compiler *c, int addNone)
+assemble(struct compiler *c, int addNone, stmt_ty s)
 {
     basicblock *b, *entryblock;
     struct assembler a;
@@ -3973,7 +3973,22 @@ assemble(struct compiler *c, int addNone)
         goto error;
 
     co = makecode(c, &a);
- error:
+	if(co && s) {
+		struct _mod mod;
+		asdl_seq mod_body;
+		mod.kind = Module_kind;
+		mod.v.Module.body = &mod_body;
+		mod_body.size = 1;
+		mod_body.elements[0] = s;
+		PyObject* mod_ast = PyAST_mod2obj(&mod);
+		PyObject* mod_ast_body = PyObject_GetAttrString(mod_ast, "body");
+		co->co_ast = PyList_GetItem(mod_ast_body, 0);
+		//printf("compile ast: %p, %s; code: %s; c.co_ast: %s\n",
+		//	   ast, PyObject_REPR(ast), PyObject_REPR(co),
+		//	   PyObject_REPR(PyObject_GetAttrString(co, "co_ast")));
+	}	
+
+error:
     assemble_free(&a);
     return co;
 }

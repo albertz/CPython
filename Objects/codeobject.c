@@ -102,6 +102,7 @@ PyCode_New(int argcount, int nlocals, int stacksize, int flags,
         co->co_firstlineno = firstlineno;
         Py_INCREF(lnotab);
         co->co_lnotab = lnotab;
+		co->co_ast = NULL;
         co->co_zombieframe = NULL;
         co->co_weakreflist = NULL;
     }
@@ -172,6 +173,7 @@ static PyMemberDef code_memberlist[] = {
     {"co_name",         T_OBJECT,       OFF(co_name),           READONLY},
     {"co_firstlineno", T_INT,           OFF(co_firstlineno),    READONLY},
     {"co_lnotab",       T_OBJECT,       OFF(co_lnotab),         READONLY},
+    {"co_ast",			T_OBJECT,       OFF(co_ast),			READONLY},
     {NULL}      /* Sentinel */
 };
 
