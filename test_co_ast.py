@@ -1,3 +1,10 @@
+# In the CPython implementation, to each code object, a new
+# attribute `co_ast` was added which contains the related
+# AST statement if available.
+
+# This is a simple demonstration for the `co_ast` attribute
+# which demonstrates possible meta coding in Python.
+
 import ast, types, sys, copy
 
 def foo(x): return x * 3
