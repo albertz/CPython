@@ -11400,6 +11400,7 @@
 			buildPhases = (
 			);
 			buildToolPath = make;
+			buildWorkingDirectory = "/Users/az/Programmierung/Python-2.7.1";
 			dependencies = (
 			);
 			name = "Python-make";
