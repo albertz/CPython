@@ -21,7 +21,7 @@
   ghost@aladdin.com
 
  */
-/* $Id: md5.h 69561 2009-02-13 03:00:00Z gregory.p.smith $ */
+/* $Id$ */
 /*
   Independent implementation of MD5 (RFC 1321).
 

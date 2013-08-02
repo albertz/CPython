@@ -1399,7 +1399,7 @@ hotshot_logreader(PyObject *unused, PyObject *args)
 static char *
 get_version_string(void)
 {
-    static char *rcsid = "$Revision: 81029 $";
+    static char *rcsid = "$Revision$";
     char *rev = rcsid;
     char *buffer;
     int i = 0;

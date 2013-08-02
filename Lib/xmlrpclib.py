@@ -1,6 +1,6 @@
 #
 # XML-RPC CLIENT LIBRARY
-# $Id: xmlrpclib.py 83123 2010-07-24 02:51:49Z victor.stinner $
+# $Id$
 #
 # an XML-RPC client interface for Python.
 #
@@ -1446,8 +1446,13 @@ class Transport:
 
     def parse_response(self, response):
         # read response data from httpresponse, and parse it
-        if response.getheader("Content-Encoding", "") == "gzip":
-            stream = GzipDecodedResponse(response)
+
+        # Check for new http response object, else it is a file object
+        if hasattr(response,'getheader'):
+            if response.getheader("Content-Encoding", "") == "gzip":
+                stream = GzipDecodedResponse(response)
+            else:
+                stream = response
         else:
             stream = response
 

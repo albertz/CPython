@@ -30,13 +30,13 @@
 """Read from and write to tar format archives.
 """
 
-__version__ = "$Revision: 85213 $"
+__version__ = "$Revision$"
 # $Source$
 
 version     = "0.9.0"
 __author__  = "Lars Gustäbel (lars@gustaebel.de)"
-__date__    = "$Date: 2010-10-04 10:37:53 -0500 (Mon, 04 Oct 2010) $"
-__cvsid__   = "$Id: tarfile.py 85213 2010-10-04 15:37:53Z lars.gustaebel $"
+__date__    = "$Date$"
+__cvsid__   = "$Id$"
 __credits__ = "Gustavo Niemeyer, Niels Gustäbel, Richard Townsend."
 
 #---------
@@ -2239,10 +2239,14 @@ class TarFile(object):
         if hasattr(os, "symlink") and hasattr(os, "link"):
             # For systems that support symbolic and hard links.
             if tarinfo.issym():
+                if os.path.lexists(targetpath):
+                    os.unlink(targetpath)
                 os.symlink(tarinfo.linkname, targetpath)
             else:
                 # See extract().
                 if os.path.exists(tarinfo._link_target):
+                    if os.path.lexists(targetpath):
+                        os.unlink(targetpath)
                     os.link(tarinfo._link_target, targetpath)
                 else:
                     self._extract_member(self._find_link_target(tarinfo), targetpath)

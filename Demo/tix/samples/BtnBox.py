@@ -1,6 +1,6 @@
 # -*-mode: python; fill-column: 75; tab-width: 8; coding: iso-latin-1-unix -*-
 #
-# $Id: BtnBox.py 78779 2010-03-08 02:11:06Z benjamin.peterson $
+# $Id$
 #
 # Tix Demostration Program
 #

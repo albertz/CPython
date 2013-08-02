@@ -2,7 +2,7 @@
 
 Utility functions for manipulating directories and directory trees."""
 
-__revision__ = "$Id: dir_util.py 86609 2010-11-20 20:02:41Z eric.araujo $"
+__revision__ = "$Id$"
 
 import os
 import errno

@@ -10,7 +10,7 @@
 
 .. T_STRING_INPLACE not described in main docs
 
-.. $Id: 2.7.rst 86813 2010-11-26 18:26:04Z georg.brandl $
+.. $Id$
    Rules for maintenance:
 
    * Anyone can add text to this document.  Do not spend very much time

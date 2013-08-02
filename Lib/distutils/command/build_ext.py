@@ -6,7 +6,7 @@ extensions ASAP)."""
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: build_ext.py 84683 2010-09-10 20:03:17Z antoine.pitrou $"
+__revision__ = "$Id$"
 
 import sys, os, string, re
 from types import *
@@ -207,7 +207,7 @@ class build_ext (Command):
 
             elif MSVC_VERSION == 8:
                 self.library_dirs.append(os.path.join(sys.exec_prefix,
-                                         'PC', 'VS8.0', 'win32release'))
+                                         'PC', 'VS8.0'))
             elif MSVC_VERSION == 7:
                 self.library_dirs.append(os.path.join(sys.exec_prefix,
                                          'PC', 'VS7.1'))
