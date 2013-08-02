@@ -1,4 +1,3 @@
-
 :mod:`sys` --- System-specific parameters and functions
 =======================================================
 
@@ -208,7 +207,7 @@ always available.
    be set at build time with the ``--exec-prefix`` argument to the
    :program:`configure` script.  Specifically, all configuration files (e.g. the
    :file:`pyconfig.h` header file) are installed in the directory
-   :file:`{exec_prefix}/lib/python{X.Y}/config', and shared library modules are
+   :file:`{exec_prefix}/lib/python{X.Y}/config`, and shared library modules are
    installed in :file:`{exec_prefix}/lib/python{X.Y}/lib-dynload`, where *X.Y*
    is the version number of Python, for example ``2.7``.
 
@@ -291,6 +290,8 @@ always available.
 
    .. versionadded:: 2.6
 
+   .. versionadded:: 2.7.3
+      The ``hash_randomization`` attribute.
 
 .. data:: float_info
 
@@ -775,7 +776,7 @@ always available.
    argument to the :program:`configure` script.  The main collection of Python
    library modules is installed in the directory :file:`{prefix}/lib/python{X.Y}``
    while the platform independent header files (all except :file:`pyconfig.h`) are
-   stored in :file:`{prefix}/include/python{X.Y}``, where *X.Y* is the version
+   stored in :file:`{prefix}/include/python{X.Y}`, where *X.Y* is the version
    number of Python, for example ``2.7``.
 
 
@@ -796,10 +797,10 @@ always available.
 
 .. data:: py3kwarning
 
-   Bool containing the status of the Python 3.0 warning flag. It's ``True``
+   Bool containing the status of the Python 3 warning flag. It's ``True``
    when Python is started with the -3 option.  (This should be considered
    read-only; setting it to a different value doesn't have an effect on
-   Python 3.0 warnings.)
+   Python 3 warnings.)
 
    .. versionadded:: 2.6
 

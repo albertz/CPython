@@ -279,15 +279,15 @@ The ``discover`` sub-command has the following options:
 
    Verbose output
 
-.. cmdoption:: -s directory
+.. cmdoption:: -s, --start-directory directory
 
-   Directory to start discovery ('.' default)
+   Directory to start discovery (``.`` default)
 
-.. cmdoption:: -p pattern
+.. cmdoption:: -p, --pattern pattern
 
-   Pattern to match test files ('test*.py' default)
+   Pattern to match test files (``test*.py`` default)
 
-.. cmdoption:: -t directory
+.. cmdoption:: -t, --top-level-directory directory
 
    Top level directory of project (defaults to start directory)
 
@@ -584,7 +584,7 @@ that is broken and will fail, but shouldn't be counted as a failure on a
 Skipping a test is simply a matter of using the :func:`skip` :term:`decorator`
 or one of its conditional variants.
 
-Basic skipping looks like this: ::
+Basic skipping looks like this::
 
    class MyTestCase(unittest.TestCase):
 
@@ -603,7 +603,7 @@ Basic skipping looks like this: ::
            # windows specific testing code
            pass
 
-This is the output of running the example above in verbose mode: ::
+This is the output of running the example above in verbose mode::
 
    test_format (__main__.MyTestCase) ... skipped 'not supported in this library version'
    test_nothing (__main__.MyTestCase) ... skipped 'demonstrating skipping'
@@ -614,9 +614,9 @@ This is the output of running the example above in verbose mode: ::
 
    OK (skipped=3)
 
-Classes can be skipped just like methods: ::
+Classes can be skipped just like methods::
 
-   @skip("showing class skipping")
+   @unittest.skip("showing class skipping")
    class MySkippedTestCase(unittest.TestCase):
        def test_not_run(self):
            pass
@@ -633,7 +633,7 @@ Expected failures use the :func:`expectedFailure` decorator. ::
 
 It's easy to roll your own skipping decorators by making a decorator that calls
 :func:`skip` on the test when it wants it to be skipped.  This decorator skips
-the test unless the passed object has a certain attribute: ::
+the test unless the passed object has a certain attribute::
 
    def skipUnlessHasattr(obj, attr):
        if hasattr(obj, attr):
@@ -1157,7 +1157,7 @@ Test cases
    .. method:: assertListEqual(list1, list2, msg=None)
                assertTupleEqual(tuple1, tuple2, msg=None)
 
-      Tests that two lists or tuples are equal.  If not an error message is
+      Tests that two lists or tuples are equal.  If not, an error message is
       constructed that shows only the differences between the two.  An error
       is also raised if either of the parameters are of the wrong type.
       These methods are used by default when comparing lists or tuples with
@@ -1426,8 +1426,8 @@ Loading and running tests
    The :class:`TestLoader` class is used to create test suites from classes and
    modules.  Normally, there is no need to create an instance of this class; the
    :mod:`unittest` module provides an instance that can be shared as
-   ``unittest.defaultTestLoader``. Using a subclass or instance, however, allows
-   customization of some configurable properties.
+   :data:`unittest.defaultTestLoader`.  Using a subclass or instance, however,
+   allows customization of some configurable properties.
 
    :class:`TestLoader` objects have the following methods:
 
@@ -1784,11 +1784,12 @@ Loading and running tests
             stream, descriptions, verbosity
 
 
-.. function:: main([module[, defaultTest[, argv[, testRunner[, testLoader[, exit[, verbosity[, failfast[, catchbreak[,buffer]]]]]]]]]])
+.. function:: main([module[, defaultTest[, argv[, testRunner[, testLoader[, exit[, verbosity[, failfast[, catchbreak[, buffer]]]]]]]]]])
 
-   A command-line program that runs a set of tests; this is primarily for making
-   test modules conveniently executable.  The simplest use for this function is to
-   include the following line at the end of a test script::
+   A command-line program that loads a set of tests from *module* and runs them;
+   this is primarily for making test modules conveniently executable.
+   The simplest use for this function is to include the following line at the
+   end of a test script::
 
       if __name__ == '__main__':
           unittest.main()
@@ -1799,9 +1800,16 @@ Loading and running tests
       if __name__ == '__main__':
           unittest.main(verbosity=2)
 
+   The *argv* argument can be a list of options passed to the program, with the
+   first element being the program name.  If not specified or ``None``,
+   the values of :data:`sys.argv` are used.
+
    The *testRunner* argument can either be a test runner class or an already
    created instance of it. By default ``main`` calls :func:`sys.exit` with
    an exit code indicating success or failure of the tests run.
+
+   The *testLoader* argument has to be a :class:`TestLoader` instance,
+   and defaults to :data:`defaultTestLoader`.
 
    ``main`` supports being used from the interactive interpreter by passing in the
    argument ``exit=False``. This displays the result on standard output without
@@ -1810,14 +1818,14 @@ Loading and running tests
       >>> from unittest import main
       >>> main(module='test_module', exit=False)
 
-   The ``failfast``, ``catchbreak`` and ``buffer`` parameters have the same
+   The *failfast*, *catchbreak* and *buffer* parameters have the same
    effect as the same-name `command-line options`_.
 
    Calling ``main`` actually returns an instance of the ``TestProgram`` class.
    This stores the result of the tests run as the ``result`` attribute.
 
    .. versionchanged:: 2.7
-      The ``exit``, ``verbosity``, ``failfast``, ``catchbreak`` and ``buffer``
+      The *exit*, *verbosity*, *failfast*, *catchbreak* and *buffer*
       parameters were added.
 
 
@@ -1860,10 +1868,10 @@ name then the package :file:`__init__.py` will be checked for ``load_tests``.
 
 .. note::
 
-   The default pattern is 'test*.py'. This matches all Python files
-   that start with 'test' but *won't* match any test directories.
+   The default pattern is ``'test*.py'``. This matches all Python files
+   that start with ``'test'`` but *won't* match any test directories.
 
-   A pattern like 'test*' will match test packages as well as
+   A pattern like ``'test*'`` will match test packages as well as
    modules.
 
 If the package :file:`__init__.py` defines ``load_tests`` then it will be

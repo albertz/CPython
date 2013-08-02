@@ -9,9 +9,9 @@
 
 .. note::
    The :mod:`urllib2` module has been split across several modules in
-   Python 3.0 named :mod:`urllib.request` and :mod:`urllib.error`.
+   Python 3 named :mod:`urllib.request` and :mod:`urllib.error`.
    The :term:`2to3` tool will automatically adapt imports when converting
-   your sources to 3.0.
+   your sources to Python 3.
 
 
 The :mod:`urllib2` module defines functions and classes which help in opening
@@ -51,6 +51,8 @@ The :mod:`urllib2` module defines the following functions:
    * :meth:`info` --- return the meta-information of the page, such as headers,
      in the form of an :class:`mimetools.Message` instance
      (see `Quick Reference to HTTP Headers <http://www.cs.tut.fi/~jkorpela/http.html>`_)
+
+   * :meth:`getcode` --- return the HTTP status code of the response.
 
    Raises :exc:`URLError` on errors.
 
@@ -121,7 +123,10 @@ The following exceptions are raised as appropriate:
       This numeric value corresponds to a value found in the dictionary of
       codes as found in :attr:`BaseHTTPServer.BaseHTTPRequestHandler.responses`.
 
+   .. attribute:: reason
 
+      The reason for this error.  It can be a message string or another exception
+      instance.
 
 The following classes are provided:
 
@@ -378,6 +383,17 @@ so all must be overridden in subclasses.
 .. method:: Request.get_selector()
 
    Return the selector --- the part of the URL that is sent to the server.
+
+
+.. method:: Request.get_header(header_name, default=None)
+
+   Return the value of the given header. If the header is not present, return
+   the default value.
+
+
+.. method:: Request.header_items()
+
+   Return a list of tuples (header_name, header_value) of the Request headers.
 
 
 .. method:: Request.set_proxy(host, type)

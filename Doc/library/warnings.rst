@@ -167,7 +167,8 @@ By default, Python installs several warning filters, which can be overridden by
 the command-line options passed to :option:`-W` and calls to
 :func:`filterwarnings`.
 
-* :exc:`PendingDeprecationWarning`, and :exc:`ImportWarning` are ignored.
+* :exc:`DeprecationWarning` and :exc:`PendingDeprecationWarning`, and
+  :exc:`ImportWarning` are ignored.
 
 * :exc:`BytesWarning` is ignored unless the :option:`-b` option is given once or
   twice; in this case this warning is either printed (``-b``) or turned into an
@@ -418,7 +419,7 @@ Available Context Managers
 
     .. note::
 
-        In Python 3.0, the arguments to the constructor for
+        In Python 3, the arguments to the constructor for
         :class:`catch_warnings` are keyword-only arguments.
 
     .. versionadded:: 2.6

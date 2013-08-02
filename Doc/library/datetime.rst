@@ -14,27 +14,34 @@
 The :mod:`datetime` module supplies classes for manipulating dates and times in
 both simple and complex ways.  While date and time arithmetic is supported, the
 focus of the implementation is on efficient attribute extraction for output
-formatting and manipulation. For related
-functionality, see also the :mod:`time` and :mod:`calendar` modules.
+formatting and manipulation. For related functionality, see also the
+:mod:`time` and :mod:`calendar` modules.
 
-There are two kinds of date and time objects: "naive" and "aware". This
-distinction refers to whether the object has any notion of time zone, daylight
-saving time, or other kind of algorithmic or political time adjustment.  Whether
-a naive :class:`.datetime` object represents Coordinated Universal Time (UTC),
-local time, or time in some other timezone is purely up to the program, just
-like it's up to the program whether a particular number represents metres,
-miles, or mass.  Naive :class:`.datetime` objects are easy to understand and to
-work with, at the cost of ignoring some aspects of reality.
+There are two kinds of date and time objects: "naive" and "aware".
 
-For applications requiring more, :class:`.datetime` and :class:`.time` objects
-have an optional time zone information attribute, :attr:`tzinfo`, that can be
-set to an instance of a subclass of the abstract :class:`tzinfo` class.  These
-:class:`tzinfo` objects capture information about the offset from UTC time, the
-time zone name, and whether Daylight Saving Time is in effect.  Note that no
-concrete :class:`tzinfo` classes are supplied by the :mod:`datetime` module.
-Supporting timezones at whatever level of detail is required is up to the
-application.  The rules for time adjustment across the world are more political
-than rational, and there is no standard suitable for every application.
+An aware object has sufficient knowledge of applicable algorithmic and
+political time adjustments, such as time zone and daylight saving time
+information, to locate itself relative to other aware objects.  An aware object
+is used to represent a specific moment in time that is not open to
+interpretation [#]_.
+
+A naive object does not contain enough information to unambiguously locate
+itself relative to other date/time objects.  Whether a naive object represents
+Coordinated Universal Time (UTC), local time, or time in some other timezone is
+purely up to the program, just like it's up to the program whether a particular
+number represents metres, miles, or mass.  Naive objects are easy to understand
+and to work with, at the cost of ignoring some aspects of reality.
+
+For applications requiring aware objects, :class:`.datetime` and :class:`.time`
+objects have an optional time zone information attribute, :attr:`tzinfo`, that
+can be set to an instance of a subclass of the abstract :class:`tzinfo` class.
+These :class:`tzinfo` objects capture information about the offset from UTC
+time, the time zone name, and whether Daylight Saving Time is in effect.  Note
+that no concrete :class:`tzinfo` classes are supplied by the :mod:`datetime`
+module.  Supporting timezones at whatever level of detail is required is up to
+the application.  The rules for time adjustment across the world are more
+political than rational, and there is no standard suitable for every
+application.
 
 The :mod:`datetime` module exports the following constants:
 
@@ -105,10 +112,13 @@ Objects of these types are immutable.
 
 Objects of the :class:`date` type are always naive.
 
-An object *d* of type :class:`.time` or :class:`.datetime` may be naive or aware.
-*d* is aware if ``d.tzinfo`` is not ``None`` and ``d.tzinfo.utcoffset(d)`` does
-not return ``None``.  If ``d.tzinfo`` is ``None``, or if ``d.tzinfo`` is not
-``None`` but ``d.tzinfo.utcoffset(d)`` returns ``None``, *d* is naive.
+An object of type :class:`.time` or :class:`.datetime` may be naive or aware.
+A :class:`.datetime` object *d* is aware if ``d.tzinfo`` is not ``None`` and
+``d.tzinfo.utcoffset(d)`` does not return ``None``.  If ``d.tzinfo`` is
+``None``, or if ``d.tzinfo`` is not ``None`` but ``d.tzinfo.utcoffset(d)``
+returns ``None``, *d* is naive.  A :class:`.time` object *t* is aware
+if ``t.tzinfo`` is not ``None`` and ``t.tzinfo.utcoffset(None)`` does not return
+``None``.  Otherwise, *t* is naive.
 
 The distinction between naive and aware doesn't apply to :class:`timedelta`
 objects.
@@ -1083,14 +1093,14 @@ Using datetime with tzinfo:
 
     >>> from datetime import timedelta, datetime, tzinfo
     >>> class GMT1(tzinfo):
-    ...     def __init__(self):         # DST starts last Sunday in March
+    ...     def utcoffset(self, dt):
+    ...         return timedelta(hours=1) + self.dst(dt)
+    ...     def dst(self, dt):
+    ...         # DST starts last Sunday in March
     ...         d = datetime(dt.year, 4, 1)   # ends last Sunday in October
     ...         self.dston = d - timedelta(days=d.weekday() + 1)
     ...         d = datetime(dt.year, 11, 1)
     ...         self.dstoff = d - timedelta(days=d.weekday() + 1)
-    ...     def utcoffset(self, dt):
-    ...         return timedelta(hours=1) + self.dst(dt)
-    ...     def dst(self, dt):
     ...         if self.dston <=  dt.replace(tzinfo=None) < self.dstoff:
     ...             return timedelta(hours=1)
     ...         else:
@@ -1099,16 +1109,15 @@ Using datetime with tzinfo:
     ...          return "GMT +1"
     ...
     >>> class GMT2(tzinfo):
-    ...     def __init__(self):
+    ...     def utcoffset(self, dt):
+    ...         return timedelta(hours=2) + self.dst(dt)
+    ...     def dst(self, dt):
     ...         d = datetime(dt.year, 4, 1)
     ...         self.dston = d - timedelta(days=d.weekday() + 1)
     ...         d = datetime(dt.year, 11, 1)
     ...         self.dstoff = d - timedelta(days=d.weekday() + 1)
-    ...     def utcoffset(self, dt):
-    ...         return timedelta(hours=1) + self.dst(dt)
-    ...     def dst(self, dt):
     ...         if self.dston <=  dt.replace(tzinfo=None) < self.dstoff:
-    ...             return timedelta(hours=2)
+    ...             return timedelta(hours=1)
     ...         else:
     ...             return timedelta(0)
     ...     def tzname(self,dt):
@@ -1145,7 +1154,7 @@ Using datetime with tzinfo:
 A time object represents a (local) time of day, independent of any particular
 day, and subject to adjustment via a :class:`tzinfo` object.
 
-.. class:: time(hour[, minute[, second[, microsecond[, tzinfo]]]])
+.. class:: time([hour[, minute[, second[, microsecond[, tzinfo]]]]])
 
    All arguments are optional.  *tzinfo* may be ``None``, or an instance of a
    :class:`tzinfo` subclass.  The remaining arguments may be ints or longs, in the
@@ -1521,6 +1530,21 @@ Applications that can't bear such ambiguities should avoid using hybrid
 other fixed-offset :class:`tzinfo` subclass (such as a class representing only
 EST (fixed offset -5 hours), or only EDT (fixed offset -4 hours)).
 
+.. seealso::
+
+   `pytz <http://pypi.python.org/pypi/pytz/>`_
+      The standard library has no :class:`tzinfo` instances, but
+      there exists a third-party library which brings the *IANA timezone
+      database* (also known as the Olson database) to Python: *pytz*.
+
+      *pytz* contains up-to-date information and its usage is recommended.
+
+   `IANA timezone database <http://www.iana.org/time-zones>`_
+      The Time Zone Database (often called tz or zoneinfo) contains code and
+      data that represent the history of local time for many representative
+      locations around the globe. It is updated periodically to reflect changes
+      made by political bodies to time zone boundaries, UTC offsets, and
+      daylight-saving rules.
 
 .. _strftime-strptime-behavior:
 
@@ -1692,3 +1716,8 @@ Notes:
 (5)
    For example, if :meth:`utcoffset` returns ``timedelta(hours=-3, minutes=-30)``,
    ``%z`` is replaced with the string ``'-0330'``.
+
+
+.. rubric:: Footnotes
+
+.. [#] If, that is, we ignore the effects of Relativity
