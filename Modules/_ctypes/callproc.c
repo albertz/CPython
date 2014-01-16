@@ -1417,15 +1417,21 @@ static PyObject *py_dl_open(PyObject *self, PyObject *args)
 {
     char *name;
     void * handle;
+// see: http://bugs.python.org/issue20276
+#ifdef __APPLE__
+#define my_RTLD_DEFAULT RTLD_LAZY
+#else
+#define my_RTLD_DEFAULT RTLD_NOW
+#endif
 #ifdef RTLD_LOCAL
-    int mode = RTLD_NOW | RTLD_LOCAL;
+    int mode = my_RTLD_DEFAULT | RTLD_LOCAL;
 #else
     /* cygwin doesn't define RTLD_LOCAL */
-    int mode = RTLD_NOW;
+    int mode = my_RTLD_DEFAULT;
 #endif
     if (!PyArg_ParseTuple(args, "z|i:dlopen", &name, &mode))
         return NULL;
-    mode |= RTLD_NOW;
+    mode |= my_RTLD_DEFAULT;
     handle = ctypes_dlopen(name, mode);
     if (!handle) {
         char *errmsg = ctypes_dlerror();
