@@ -75,7 +75,8 @@ PyInterpreterState_New(void)
         interp->codec_search_cache = NULL;
         interp->codec_error_registry = NULL;
 #ifdef HAVE_DLOPEN
-#ifdef RTLD_NOW
+// see: http://bugs.python.org/issue20276
+#if defined(RTLD_NOW) && !defined(__APPLE__)
         interp->dlopenflags = RTLD_NOW;
 #else
         interp->dlopenflags = RTLD_LAZY;
