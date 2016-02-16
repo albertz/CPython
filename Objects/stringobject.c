@@ -1688,6 +1688,7 @@ _PyString_Join(PyObject *sep, PyObject *x)
     return string_join((PyStringObject *)sep, x);
 }
 
+#undef ADJUST_INDICES
 /* helper macro to fixup start/end slice values */
 #define ADJUST_INDICES(start, end, len)         \
     if (end > len)                          \
