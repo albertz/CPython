@@ -1190,6 +1190,24 @@
             PyObject *v = GETLOCAL(oparg);
             if (v == NULL) goto unbound_local_error_tier_two;
             SETLOCAL(oparg, NULL);
+            PyObject *ns = LOCALS();
+            if(ns) {
+                PyObject *name = GETITEM(_PyFrame_GetCode(frame)->co_localsplusnames, oparg);
+                int err;
+                if (ns == NULL) {
+                    _PyErr_Format(tstate, PyExc_SystemError,
+                                  "no locals when deleting %R", name);
+                    GOTO_ERROR(error);
+                }
+                err = PyObject_DelItem(ns, name);
+                // Can't use ERROR_IF here.
+                if (err != 0) {
+                    _PyEval_FormatExcCheckArg(tstate, PyExc_NameError,
+                        NAME_ERROR_MSG,
+                        name);
+                    GOTO_ERROR(error);
+                }
+            }
             break;
         }
 
